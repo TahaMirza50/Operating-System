@@ -10,9 +10,14 @@ public class main
         // memory subMem = new memory();
         // regFile subRegister =  new regFile();
         // process Process = new process();
-        cycle exe = new cycle();
+        cycle exe = new cycle(8);
         try{
-            exe.load("src/p5");
+            exe.load("p5");
+            exe.load("power");
+
+            System.out.println(exe.readyPriorityQueue.toString());
+
+            exe.run();
         } catch (Exception e) {
             System.out.println("An error occurred: " + e);
         }

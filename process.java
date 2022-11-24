@@ -1,12 +1,12 @@
 import java.io.*;
 
-public class process
+public class process implements Comparable<process>
 {
     memory sharedMem;
     int i = 0;
     pcb PCB;
     //static int p = 0;  
-    cycle exe = new cycle();
+    // cycle exe = new cycle();
 
     process(){
         PCB = new pcb();
@@ -80,10 +80,32 @@ public class process
             dataPages--;
         }
 
+        int dataBase = 1024 * PCB.datapt.getFrame(0);
+        int dataLimit = dataBase + PCB.getP_Size_D();
+        int dataCounter = dataBase;
+        PCB.reg.setReg((byte) 23, (short) dataBase); // data base
+        PCB.reg.setReg((byte) 24, (short) dataLimit); // data limit
+        PCB.reg.setReg((byte) 25, (short) dataCounter); // data counter
+        
+        int codeBase = 1024 * PCB.codept.getFrame(0);
+        int codeLimit = codeBase + PCB.getP_Size_C();
+        int codeCounter = codeBase;
+        PCB.reg.setReg((byte) 17, (short) codeBase); //code base
+        PCB.reg.setReg((byte) 18, (short) codeLimit); //code limit
+        PCB.reg.setReg((byte) 19, (short) codeCounter); //code counter
+        
+        //PCB.codept.printTable();
+        // PCB.reg.setReg((byte) 17, (short) 0); //code base
+        // PCB.reg.setReg((byte) 18, (short) 0); //code limit
+        // PCB.reg.setReg((byte) 19, (short) 0); //code counter
+        // PCB.reg.setReg((byte) 23, (short) 0); // data base
+        // PCB.reg.setReg((byte) 24, (short) 0); // data limit
+        // PCB.reg.setReg((byte) 25, (short) 0); // data counter
+        //System.out.println(PCB.datapt.getFrame);
         code = null;
         data = null;
         System.out.println("File has been readed.");
-        sharedMem.printMemory();
+        //sharedMem.printMemory();
     }
 
     byte getCode(short pc) {
@@ -128,6 +150,10 @@ public class process
         return temp;
     }
 
+    @Override
+    public int compareTo(process p1) {
+        return p1.PCB.getP_Priority() < PCB.getP_Priority() ? 1 : -1;
+    }
     // void executeProcess(){   
     //     sharedMem.printMemory();
     //     exe.run(PCB.reg, sharedMem);

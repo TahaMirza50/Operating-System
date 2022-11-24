@@ -1,9 +1,13 @@
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 /**
  * Cycle - This object identifies a cycle through which each instruction goes through. Each instruction is fetched, decoded and executed.
  */
 
 public class cycle 
 {
+    private int quantum;
     private short num;
     private int inst;
     private byte src,trg;
@@ -13,11 +17,42 @@ public class cycle
     memory mainmemory = new memory();
     process p1;
 
+    Queue<process> readyPriorityQueue = new PriorityQueue<>();
+    roundRobinQueue readyRoundRobinQueue = new roundRobinQueue();
+
+    cycle(int quantum) {
+        this.quantum = quantum;
+    }
+
     void load(String filename) throws Exception { //loads file
         p1 = new process();
         p1.loadProcess(filename,mainmemory);
-        run(p1.PCB.reg, mainmemory);
-        //mainmemory.printMemory();
+
+        if (p1.PCB.getP_Priority() >= 0 && p1.PCB.getP_Priority() <= 15) {
+            readyPriorityQueue.add(p1);
+        }
+        else if (p1.PCB.getP_Priority() > 15 && p1.PCB.getP_Priority() <= 31) {
+            readyRoundRobinQueue.add(p1);
+        }
+        else {
+            System.out.println("Priority is out of range");
+        }
+        // run(p1.PCB.reg, mainmemory);
+        // mainmemory.printMemory();
+    }
+
+    public void run() {
+        while (!readyPriorityQueue.isEmpty()) {
+            p1 = readyPriorityQueue.poll();
+            System.out.println(p1.toString());
+            runProcess(p1.PCB.reg, p1.sharedMem);
+        }
+
+        // while (!readyRoundRobinQueue.isEmpty()) {
+        //     p1 = readyRoundRobinQueue.peek();
+        //     System.out.println(p1.toString());
+        //     runProcess(p1.PCB.reg, p1.sharedMem);
+        // }
     }
     /**
      * @dev Run function works in loop with each iteration fetching, decoding and excuting a instruction.
@@ -25,16 +60,15 @@ public class cycle
      * @param register = Register File
      * @param mem = Memory
      */
-    public void run(regFile register,memory mem)
+    public void runProcess(regFile register,memory mem)
     {
-        while(inst!=243)
-        {
+        inst = 0;
+        while(inst!=243) {
             fetchDecode(register, mem);
             if(Syntax || ((trg<16 && trg>=0) && (src<16 && src>=0)))
                 execute(register, mem);
         }
     }
-
     /**
      * @dev First each instruction is check and next number of bytes are then read according to Instruction Format.
      * For register one byte is read, for immediate two bytes are read.
@@ -46,11 +80,12 @@ public class cycle
      */
     public void fetchDecode(regFile register,memory mem)
     {
+        //System.out.println(register.getReg((byte)19));
         Syntax = true;
         pc = register.getReg((byte) 19);
         register.INC((byte) 19);
         inst = Byte.toUnsignedInt(mem.getMemByte(pc));
-        System.out.println(inst);
+        //System.out.println(inst);
         if(inst>=48 && inst<=54)
         {
             register.reFlag();
@@ -80,7 +115,7 @@ public class cycle
             pc = register.getReg((byte) 19);
             src = mem.getMemByte(pc);
             register.INC((byte) 19);
-            System.out.println(trg + " " + src);
+            //System.out.println(trg + " " + src);
         }
         else if(inst>=113 && inst<=120)
         {
@@ -121,6 +156,7 @@ public class cycle
     public void execute(regFile register, memory mem)
     {
         //System.out.println(inst + " "  + num + " " + src + " " +  trg);
+        System.out.println(pc);
         String opcode = Integer.toHexString(inst);
         System.out.println(opcode);
         switch (opcode) {
@@ -136,13 +172,13 @@ public class cycle
             case "19":
                 register.MUL(trg, src);
                 break;
-            case "1A":
+            case "1a":
                 register.DIV(trg, src);
                 break;
-            case "1B":
+            case "1b":
                 register.AND(trg, src);
                 break;
-            case "1C":
+            case "1c":
                 register.OR(trg, src);
                 break;
             case "30":
@@ -178,18 +214,24 @@ public class cycle
                 if(register.getFlag(0) == '1')
                    register.setReg((byte)19, num);
                 break; 
-            case "3A":
+            case "3a":
                 if(register.getFlag(2) == '1')
                     register.setReg((byte)19, num);
                 break;
             case "3b":
-                    register.setReg((byte)19, num);
-                    System.out.println(num);
+                short base = register.getReg((byte)17);
+                //System.out.println(add);   
+                register.setReg((byte)19, (short)(base + num));   
+                //System.out.println(num);
                 break;     
             case "51":
                     short word = p1.getData(num);
                     register.setReg(trg, word);
-                break;    
+                break;   
+            case "52":
+                    short value = register.getReg(trg);
+                    p1.setData(num, value);
+                break;     
             case "71":
                 register.SHL(trg);
                 break;
@@ -212,9 +254,9 @@ public class cycle
                 break;
             case "78":
                 break;
-            case "F2":
+            case "f2":
                 break;    
-            case "F3":
+            case "f3":
                 break;    
             default:
                 break;
