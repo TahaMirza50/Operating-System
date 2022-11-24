@@ -13,7 +13,7 @@ public class main
         cycle exe = new cycle(8);
         try{
             exe.load("p5");
-            exe.load("power");
+            exe.load("sfull");
 
             System.out.println(exe.readyPriorityQueue.toString());
 

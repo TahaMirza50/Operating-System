@@ -8,6 +8,7 @@ import java.util.Queue;
 public class cycle 
 {
     private int quantum;
+    private int clockCycle;
     private short num;
     private int inst;
     private byte src,trg;
@@ -45,14 +46,19 @@ public class cycle
         while (!readyPriorityQueue.isEmpty()) {
             p1 = readyPriorityQueue.poll();
             System.out.println(p1.toString());
-            runProcess(p1.PCB.reg, p1.sharedMem);
+            runPriorityProcess(p1.PCB.reg, p1.sharedMem);
         }
 
-        // while (!readyRoundRobinQueue.isEmpty()) {
-        //     p1 = readyRoundRobinQueue.peek();
-        //     System.out.println(p1.toString());
-        //     runProcess(p1.PCB.reg, p1.sharedMem);
-        // }
+        while (!readyRoundRobinQueue.isEmpty()) {
+            clockCycle = 0;
+
+            p1 = readyRoundRobinQueue.peek();
+            System.out.println(p1.toString());
+
+            
+
+            runRoundRobinProcess(p1.PCB.reg, p1.sharedMem);
+        }
     }
     /**
      * @dev Run function works in loop with each iteration fetching, decoding and excuting a instruction.
@@ -60,14 +66,42 @@ public class cycle
      * @param register = Register File
      * @param mem = Memory
      */
-    public void runProcess(regFile register,memory mem)
+    public void runPriorityProcess(regFile register,memory mem)
     {
-        inst = 0;
+        pc = register.getReg((byte) 19);
+        inst = Byte.toUnsignedInt(mem.getMemByte(pc));
         while(inst!=243) {
             fetchDecode(register, mem);
             if(Syntax || ((trg<16 && trg>=0) && (src<16 && src>=0)))
                 execute(register, mem);
         }
+        inst = 0;
+        
+    }
+
+    public void runRoundRobinProcess(regFile register,memory mem)
+    {
+        pc = register.getReg((byte) 19);
+        inst = Byte.toUnsignedInt(mem.getMemByte(pc));
+        while(inst!=243) {
+            fetchDecode(register, mem);
+            if(Syntax || ((trg<16 && trg>=0) && (src<16 && src>=0)))
+                execute(register, mem);
+
+            clockCycle += 2;
+
+            if (clockCycle >= quantum) {
+                readyRoundRobinQueue.switchProcess();
+                clockCycle = 0;
+                break;
+            }
+        }
+        
+        if (inst == 243) {
+            readyRoundRobinQueue.delete();
+            inst = 0;
+        }
+        
     }
     /**
      * @dev First each instruction is check and next number of bytes are then read according to Instruction Format.
