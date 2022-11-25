@@ -237,27 +237,35 @@ public class cycle
                 register.ORI(trg, num);
                 break;
             case "37":
-                if(register.getFlag(1) == '0')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(1) == '0'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break; 
             case "38":
-                if(register.getFlag(1) == '1')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(1) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break;
             case "39":
-                if(register.getFlag(0) == '1')
-                   register.setReg((byte)19, num);
+                if(register.getFlag(0) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break; 
             case "3a":
-                if(register.getFlag(2) == '1')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(2) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break;
             case "3b":
                 short base = register.getReg((byte)17);
                 //System.out.println(add);   
                 register.setReg((byte)19, (short)(base + num));   
                 //System.out.println(num);
-                break;     
+                break;         
             case "51":
                     short word = p1.getData(num);
                     register.setReg(trg, word);
