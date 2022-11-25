@@ -4,6 +4,8 @@ public class pcb
     private byte p_Priority;
     private int p_Size_C;
     private int p_Size_D;
+    private int p_exectionTime;
+    private int p_waitingTime;
     private String p_Name;
     regFile reg;
     pagetable datapt = new pagetable(20);
@@ -24,6 +26,23 @@ public class pcb
         p_Size_D = sized;
         p_Size_C = sizec;
     }
+
+    void incWaitTime() {
+        p_waitingTime += 2;
+    }
+
+    int getWaitTime() {
+        return p_waitingTime;
+    }
+
+    void setExecutionTime(int time) {
+        p_exectionTime += time;
+    }
+
+    int getExecutionTime() {
+        return p_exectionTime;
+    }
+
 
     int getinstcounter(){ 
         return instCount;
