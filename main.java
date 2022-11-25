@@ -21,6 +21,7 @@ public class main
         } catch (Exception e) {
             System.out.println("An error occurred: " + e);
         }
+        exe.mainmemory.printMemory();
         //Process.executeProcess();
         //memory.storeCode("src/p0.txt", subMem.mem);
         //exe.run(Process.PCB.reg, Process.sharedMem);

@@ -10,12 +10,12 @@ public class regFile
     public regFile()
     {
         setReg((byte) 16, (short) 0); // first special purpose register (Zero Register)
-        setReg((byte) 17, (short) 0); // code base
+        //setReg((byte) 17, (short) 0); // code base
         //setReg((byte) 18, (short) 0);  code limit
-        setReg((byte) 19, (short) 0); // code counter
-        setReg((byte) 20, (short) 65535); // stack base
-        setReg((byte) 21, (short) 50); // stack limit (50 bytes)
-        setReg((byte) 22, (short) 65535); // stack counter
+        //setReg((byte) 19, (short) 0); // code counter
+        //setReg((byte) 20, (short) 65535); // stack base
+        //setReg((byte) 21, (short) 50); // stack limit (50 bytes)
+        //setReg((byte) 22, (short) 65535); // stack counter
         //setReg((byte) 23, (short) 0); // data base
         //setReg((byte) 24, (short) 0); // data limit
         //setReg((byte) 25, (short) 0); // data counter

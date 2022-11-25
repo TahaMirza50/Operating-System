@@ -12,8 +12,10 @@ public class cycle
     private short num;
     private int inst;
     private byte src,trg;
-    private String add;
+    //private String add;
     private short pc;
+    private short value;
+    private short add;
     private boolean Syntax;
     memory mainmemory = new memory();
     process p1;
@@ -245,33 +247,41 @@ public class cycle
                 register.ORI(trg, num);
                 break;
             case "37":
-                if(register.getFlag(1) == '0')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(1) == '0'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break; 
             case "38":
-                if(register.getFlag(1) == '1')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(1) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break;
             case "39":
-                if(register.getFlag(0) == '1')
-                   register.setReg((byte)19, num);
+                if(register.getFlag(0) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break; 
             case "3a":
-                if(register.getFlag(2) == '1')
-                    register.setReg((byte)19, num);
+                if(register.getFlag(2) == '1'){
+                    short base = register.getReg((byte)17);
+                    register.setReg((byte)19, (short)(base + num));
+                }
                 break;
             case "3b":
                 short base = register.getReg((byte)17);
                 //System.out.println(add);   
                 register.setReg((byte)19, (short)(base + num));   
                 //System.out.println(num);
-                break;     
+                break;         
             case "51":
-                    short word = p1.getData(num);
-                    register.setReg(trg, word);
+                    value = p1.getData(num);
+                    register.setReg(trg, value);
                 break;   
             case "52":
-                    short value = register.getReg(trg);
+                    value = register.getReg(trg);
                     p1.setData(num, value);
                 break;     
             case "71":
@@ -293,16 +303,28 @@ public class cycle
                 register.DEC(trg);
                 break;
             case "77":
+                add = register.getReg((byte) 22);
+                value = register.getReg(trg);
+                mem.setMem(add, value);
+                System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
+                register.INC((byte) 22);
+                register.INC((byte) 22);
                 break;
             case "78":
+                add = register.getReg((byte) 22);
+                value = register.getReg(trg);
+                mem.getMemShort(add-1);
+                register.DEC((byte) 22);
+                register.DEC((byte) 22);
                 break;
             case "f2":
+                //NOOP
                 break;    
             case "f3":
                 break;    
             default:
                 break;
         }
-        register.printGenReg();
+        //register.printGenReg();
     }
 }

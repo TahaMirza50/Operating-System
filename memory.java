@@ -13,7 +13,6 @@ public class memory {
     public int pageSize = 1024;
 
 
-
     public void setMem(int offset, short value) {
         byte firstByte = getFirstByte(value);
         byte secondByte = getSecondByte(value);
@@ -41,7 +40,7 @@ public class memory {
         byte firstByte = mem[offset];
         byte secondByte = mem[++offset];
 
-        return createShort(firstByte, secondByte);
+        return createShort2(firstByte, secondByte);
     }
 
     public int codeLoad(byte[] carry, int codeSize)

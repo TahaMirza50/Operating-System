@@ -93,6 +93,10 @@ public class process implements Comparable<process>
         PCB.reg.setReg((byte) 17, (short) codeBase); //code base
         PCB.reg.setReg((byte) 18, (short) codeLimit); //code limit
         PCB.reg.setReg((byte) 19, (short) codeCounter); //code counter
+
+        PCB.reg.setReg((byte) 20, (short) (codeLimit+1)); //stack base
+        PCB.reg.setReg((byte) 21, (short) (codeLimit+1+50)); //stack limit
+        PCB.reg.setReg((byte) 22, (short) (codeLimit+1)); //stack coounter
         
         //PCB.codept.printTable();
         // PCB.reg.setReg((byte) 17, (short) 0); //code base
