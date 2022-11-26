@@ -9,8 +9,8 @@ import java.util.Scanner;
 public class memory {
     public static byte[] mem = new byte[65536];
 
-    public static pagetable memTable = new pagetable(64);
-    public int pageSize = 1024;
+    public static pagetable memTable = new pagetable(1024);
+    public int pageSize = 128;
 
 
     public void setMem(int offset, short value) {
@@ -53,7 +53,7 @@ public class memory {
             memTable.setFrame(i, 1);
             int j = 0;
             for ( j=0; j<codeSize ; j++){
-                int memind = i*1024+j;
+                int memind = i*128+j;
                 mem[ memind ] = carry[j];
             }
         }
