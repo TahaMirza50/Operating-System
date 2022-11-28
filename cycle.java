@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -72,58 +74,92 @@ public class cycle
     {
         pc = p.PCB.reg.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
-        while(inst!=243) {
-            fetchDecode(register, mem);
-            if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
-                execute(register, mem);
-            else 
-                break;
-            if(pc>register.getReg((byte)18)){ //PC going outside alloted code size
-                System.out.println("Process terminated due to abnormal activity.");
-                inst = 243;
-                break;
-            }
+        try {
+            File processFile = new File("output/" + p.PCB.getName() + ".txt");
+            processFile.createNewFile();
+            
+            FileWriter processWriter = new FileWriter(processFile, processFile.exists());
+            
+            while(inst!=243) {
+                fetchDecode(p.PCB.reg, p.sharedMem);
+                if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0)) {
+                    execute(p.PCB.reg, p.sharedMem);
+                }        
+                else 
+                    break;
+                if(pc>p.PCB.reg.getReg((byte)18)){ //PC going outside alloted code size
+                    System.out.println("Process terminated due to abnormal activity.");
+                    processWriter.write("Process terminated due to abnormal activity." + "\n") ;
+                    inst = 243;
+                    break;
+                }
 
-            clockCycle += 2;
+                clockCycle += 2;
+            }
+            p.PCB.setExecutionTime(clockCycle);
+            System.out.println("Execution Time: " + p.PCB.getExecutionTime());
+            // dump entire memory and execution time to file and close file
+
+            p.PCB.printPcbToFile(processWriter);
+            p.PCB.printProcessMemory(processWriter, p.sharedMem);
+
+            processWriter.close();
+            inst = 0;
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e);
         }
-        p.PCB.setExecutionTime(clockCycle);
-        System.out.println("Execution Time: " + p.PCB.getExecutionTime());
-        inst = 0;
     }
 
     public void runRoundRobinProcess(process p)
     {
         pc = p.PCB.reg.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
-        while(inst!=243) {
-            fetchDecode(register, mem);
-            System.out.println("Hello" + Syntax);
-            if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
-                execute(register, mem);
-            else 
-                break;
-            if(pc>register.getReg((byte)18)){ //PC going outside alloted code size
-                System.out.println("Process terminated due to abnormal activity.");
-                inst = 243;
-                break;
-            }
-            clockCycle += 2;
-            readyRoundRobinQueue.incWait();
-
-            if (clockCycle >= quantum) {
-                readyRoundRobinQueue.switchProcess();
-                p.PCB.setExecutionTime(clockCycle);
-                clockCycle = 0;
-                break;
-            }
-        }
+        try {
+            File processFile = new File("output/" + p.PCB.getName() + ".txt");
+            processFile.createNewFile();
+            
+            FileWriter processWriter = new FileWriter(processFile, processFile.exists());
         
-        if (inst == 243) {
-            p.PCB.setExecutionTime(2);
-            System.out.println("Execution Time: " + p.PCB.getExecutionTime());
-            System.out.println("Waiting Time: " + p.PCB.getWaitTime());
-            readyRoundRobinQueue.delete();
-            inst = 0;
+            while(inst!=243) {
+                fetchDecode(p.PCB.reg, p.sharedMem);
+                System.out.println("Hello" + Syntax);
+                if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
+                    execute(p.PCB.reg, p.sharedMem);
+                    // add each instruction to file
+                else 
+                    break;
+                if(pc>p.PCB.reg.getReg((byte)18)){ //PC going outside alloted code size
+                    System.out.println("Process terminated due to abnormal activity.");
+                    inst = 243;
+                    break;
+                }
+                clockCycle += 2;
+                readyRoundRobinQueue.incWait();
+
+                if (clockCycle >= quantum) {
+                    readyRoundRobinQueue.switchProcess();
+                    p.PCB.setExecutionTime(clockCycle);
+                    
+                    clockCycle = 0;
+                    break;
+                }
+            }
+            
+            if (inst == 243) {
+                p.PCB.setExecutionTime(2);
+                System.out.println("Execution Time: " + p.PCB.getExecutionTime());
+                System.out.println("Waiting Time: " + p.PCB.getWaitTime());
+
+                p.PCB.printPcbToFile(processWriter);
+                p.PCB.printProcessMemory(processWriter, p.sharedMem);
+                
+                processWriter.close();
+                readyRoundRobinQueue.delete();
+                inst = 0;
+            }
+
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e);
         }
         
     }

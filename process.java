@@ -99,10 +99,10 @@ public class process implements Comparable<process>
         int frame = sharedMem.codeLoad(stack, 128);
         PCB.stackpt.setFrame(currPageNO,frame);
         int stackBase = 128 * PCB.stackpt.getFrame(0);
-        int stackimit = stackBase + 50;
+        int stackLimit = stackBase + 50;
         int stackCounter = stackBase;
         PCB.reg.setReg((byte) 20, (short) (stackBase)); //stack base
-        PCB.reg.setReg((byte) 21, (short) (stackimit)); //stack limit
+        PCB.reg.setReg((byte) 21, (short) (stackLimit)); //stack limit
         PCB.reg.setReg((byte) 22, (short) (stackCounter)); //stack coounter
         
         //PCB.codept.printTable();

@@ -133,11 +133,14 @@ public class memory {
         short tmp = (short) Integer.parseInt(hex,16);
         return tmp;
     }
-    void printMemory()
+    String printMemory()
     {
+        String output = "";
         for (int i=0 ; i<65536 ; i++)
         {
             System.out.print(Integer.toHexString(mem[i]) + " ");
+            output += Integer.toHexString(mem[i]) + " ";
         } 
+        return output;
     }
 }

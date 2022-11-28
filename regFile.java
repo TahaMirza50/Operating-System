@@ -263,23 +263,32 @@ public class regFile
      * For special register address is converted to int first to avoid negative addresses.
      * Flag register is printed in binary with MSB = flag[16] and LSB = flag[0].
      */
-    public void printGenReg() {
+    public String printGenReg() {
+        String output = "";
         System.out.println("General Register values:");
+
+        output += "General Register values:" + "\n";
         for (int i = 0; i < 16; i++) {
             System.out.println("Reg " + (i) + ": " + Reg[i]);
+            output += "Reg " + (i) + ": " + Reg[i] + "\n";
         }
 
         System.out.println("Special Register values:");
         for (int i = 16; i < Reg.length; i++) {
             System.out.println("Reg " + (i) + ": " + Short.toUnsignedInt(Reg[i]));
+            output += "Reg " + (i) + ": " + Short.toUnsignedInt(Reg[i]) + "\n";
 
         }
 
         System.out.println("Flag Register");
         for(int i = flag.length-1 ; i >=0 ; i--){
             System.out.print(flag[i]);
+            output += flag[i];
         }
         System.out.println();
+        output += "\n";
         System.out.println("------------------------------");
+        output += "------------------------------" + "\n";
+        return output;
     }
 }
