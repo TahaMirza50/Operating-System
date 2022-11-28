@@ -19,6 +19,7 @@ public class cycle
     private short value;
     private short add;
     private boolean Syntax = true;
+    private regFile cpuRegFile;
     memory mainmemory = new memory();
     process p1;
 
@@ -87,7 +88,7 @@ public class cycle
                 }        
                 else 
                     break;
-                if(pc>p.PCB.reg.getReg((byte)18)){ //PC going outside alloted code size
+                if(pc>(p.PCB.reg.getReg((byte)17)+p.PCB.reg.getReg((byte)18))){ //PC going outside alloted code size
                     System.out.println("Process terminated due to abnormal activity.");
                     processWriter.write("Process terminated due to abnormal activity." + "\n") ;
                     inst = 243;
@@ -128,7 +129,7 @@ public class cycle
                     // add each instruction to file
                 else 
                     break;
-                if(pc>p.PCB.reg.getReg((byte)18)){ //PC going outside alloted code size
+                if(pc>(p.PCB.reg.getReg((byte)17)+p.PCB.reg.getReg((byte)18))){ //PC going outside alloted code size
                     System.out.println("Process terminated due to abnormal activity.");
                     inst = 243;
                     break;

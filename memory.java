@@ -141,6 +141,7 @@ public class memory {
             System.out.print(Integer.toHexString(mem[i]) + " ");
             output += Integer.toHexString(mem[i]) + " ";
         } 
+        memTable.printTable();
         return output;
     }
 }

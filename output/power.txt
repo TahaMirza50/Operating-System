@@ -1,0 +1,53 @@
+Process ID: 257
+Process Name: power
+Process Priority: 1
+Process Size Code: 57
+Process Size Data: 4
+Process Execution Time: 30
+Process Waiting Time: 0
+Process Instruction Count: 0
+Process Current PC: 0
+Process Register Values: General Register values:
+Reg 0: 0
+Reg 1: 14336
+Reg 2: 523
+Reg 3: 14336
+Reg 4: 1
+Reg 5: 0
+Reg 6: 0
+Reg 7: 0
+Reg 8: 0
+Reg 9: 0
+Reg 10: 0
+Reg 11: 0
+Reg 12: 0
+Reg 13: 0
+Reg 14: 0
+Reg 15: 0
+Reg 16: 0
+Reg 17: 5376
+Reg 18: 57
+Reg 19: 5413
+Reg 20: 5632
+Reg 21: 50
+Reg 22: 5630
+Reg 23: 5504
+Reg 24: 4
+Reg 25: 5504
+Reg 26: 0
+Reg 27: 0
+Reg 28: 0
+Reg 29: 0
+Reg 30: 0
+0000000000000000
+------------------------------
+
+Data
+2 b 38 0 0 
+----------------
+Code
+51 1 0 2 51 2 0 0 77 1 77 2 3c 0 0 16 78 0 3d 0 1 fffffff3 78 0 78 2 78 1 77 0 16 3 1 30 4 0 1 32 3 0 0 37 0 0 24 19 4 2 76 3 38 0 0 21 77 4 fffffff1 0 
+----------------
+Stack
+38 0 2 b 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+----------------

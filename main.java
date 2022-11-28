@@ -20,7 +20,7 @@ public class main
             exe.load("large0");
             exe.load("noop");
             exe.load("p5 - Copy");
-            //exe.load("power");
+            exe.load("power");
 
             System.out.println(exe.readyPriorityQueue.toString());
 

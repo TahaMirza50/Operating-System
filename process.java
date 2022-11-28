@@ -81,17 +81,15 @@ public class process implements Comparable<process>
         }
 
         int dataBase = 128 * PCB.datapt.getFrame(0);
-        int dataLimit = dataBase + PCB.getP_Size_D();
         int dataCounter = dataBase;
         PCB.reg.setReg((byte) 23, (short) dataBase); // data base
-        PCB.reg.setReg((byte) 24, (short) dataLimit); // data limit
+        PCB.reg.setReg((byte) 24, (short) PCB.getP_Size_D()); // data limit
         PCB.reg.setReg((byte) 25, (short) dataCounter); // data counter
         
         int codeBase = 128 * PCB.codept.getFrame(0);
-        int codeLimit = codeBase + PCB.getP_Size_C();
         int codeCounter = codeBase;
         PCB.reg.setReg((byte) 17, (short) codeBase); //code base
-        PCB.reg.setReg((byte) 18, (short) codeLimit); //code limit
+        PCB.reg.setReg((byte) 18, (short) PCB.getP_Size_C()); //code limit
         PCB.reg.setReg((byte) 19, (short) codeCounter); //code counter
 
         currPageNO = 0;
@@ -99,10 +97,9 @@ public class process implements Comparable<process>
         int frame = sharedMem.codeLoad(stack, 128);
         PCB.stackpt.setFrame(currPageNO,frame);
         int stackBase = 128 * PCB.stackpt.getFrame(0);
-        int stackLimit = stackBase + 50;
         int stackCounter = stackBase;
         PCB.reg.setReg((byte) 20, (short) (stackBase)); //stack base
-        PCB.reg.setReg((byte) 21, (short) (stackLimit)); //stack limit
+        PCB.reg.setReg((byte) 21, (short) (50)); //stack limit
         PCB.reg.setReg((byte) 22, (short) (stackCounter)); //stack coounter
         
         //PCB.codept.printTable();
@@ -116,6 +113,7 @@ public class process implements Comparable<process>
         code = null;
         data = null;
         System.out.println("File has been readed.");
+        f_is.close();
         //sharedMem.printMemory();
     }
 
