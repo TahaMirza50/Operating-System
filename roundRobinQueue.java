@@ -17,6 +17,17 @@ public class roundRobinQueue {
         this.run = null;
     }
 
+    public void incWait() {
+        Node temp = head;
+        while (temp.next != null) {
+            if (temp != run)
+                temp.data.PCB.incWaitTime();
+            temp = temp.next;
+        }
+        if (temp != run)
+            temp.data.PCB.incWaitTime();
+    }
+
     public void switchProcess() {
         if (run.next != null) {
             run = run.next;

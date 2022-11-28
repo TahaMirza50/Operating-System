@@ -46,9 +46,11 @@ public class cycle
 
     public void run() {
         while (!readyPriorityQueue.isEmpty()) {
+            clockCycle = 0;
+
             p1 = readyPriorityQueue.poll();
             System.out.println(p1.toString());
-            runPriorityProcess(p1.PCB.reg, p1.sharedMem);
+            runPriorityProcess(p1);
         }
 
         while (!readyRoundRobinQueue.isEmpty()) {
@@ -57,9 +59,7 @@ public class cycle
             p1 = readyRoundRobinQueue.peek();
             System.out.println(p1.toString());
 
-            
-
-            runRoundRobinProcess(p1.PCB.reg, p1.sharedMem);
+            runRoundRobinProcess(p1);
         }
     }
     /**
@@ -68,10 +68,10 @@ public class cycle
      * @param register = Register File
      * @param mem = Memory
      */
-    public void runPriorityProcess(regFile register,memory mem)
+    public void runPriorityProcess(process p)
     {
-        pc = register.getReg((byte) 19);
-        inst = Byte.toUnsignedInt(mem.getMemByte(pc));
+        pc = p.PCB.reg.getReg((byte) 19);
+        inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         while(inst!=243) {
             fetchDecode(register, mem);
             if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
@@ -83,15 +83,18 @@ public class cycle
                 inst = 243;
                 break;
             }
+
+            clockCycle += 2;
         }
+        p.PCB.setExecutionTime(clockCycle);
+        System.out.println("Execution Time: " + p.PCB.getExecutionTime());
         inst = 0;
-        
     }
 
-    public void runRoundRobinProcess(regFile register,memory mem)
+    public void runRoundRobinProcess(process p)
     {
-        pc = register.getReg((byte) 19);
-        inst = Byte.toUnsignedInt(mem.getMemByte(pc));
+        pc = p.PCB.reg.getReg((byte) 19);
+        inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         while(inst!=243) {
             fetchDecode(register, mem);
             System.out.println("Hello" + Syntax);
@@ -104,17 +107,21 @@ public class cycle
                 inst = 243;
                 break;
             }
-                
             clockCycle += 2;
+            readyRoundRobinQueue.incWait();
 
             if (clockCycle >= quantum) {
                 readyRoundRobinQueue.switchProcess();
+                p.PCB.setExecutionTime(clockCycle);
                 clockCycle = 0;
                 break;
             }
         }
         
         if (inst == 243) {
+            p.PCB.setExecutionTime(2);
+            System.out.println("Execution Time: " + p.PCB.getExecutionTime());
+            System.out.println("Waiting Time: " + p.PCB.getWaitTime());
             readyRoundRobinQueue.delete();
             inst = 0;
         }
