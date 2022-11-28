@@ -10,6 +10,7 @@ public class pcb
     regFile reg;
     pagetable datapt = new pagetable(20);
     pagetable codept = new pagetable(20);
+    pagetable stackpt = new pagetable(20);
     private int currPC;
     private int instCount;
 
@@ -108,11 +109,19 @@ public class pcb
         datapt.setFrame(frameno,pageno);
     }
 
+    void set_spt(int frameno, int pageno){ 
+        stackpt.setFrame(frameno,pageno);
+    }
+
     int get_cpt(int pageno){ 
         return codept.getFrame(pageno);
     }
 
     int get_dpt(int pageno){ 
         return datapt.getFrame(pageno);
+    }
+
+    int get_spt(int pageno){ 
+        return stackpt.getFrame(pageno);
     }
 }

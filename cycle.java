@@ -16,7 +16,7 @@ public class cycle
     private short pc;
     private short value;
     private short add;
-    private boolean Syntax;
+    private boolean Syntax = true;
     memory mainmemory = new memory();
     process p1;
 
@@ -73,9 +73,16 @@ public class cycle
         pc = p.PCB.reg.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         while(inst!=243) {
-            fetchDecode(p.PCB.reg, p.sharedMem);
-            if(Syntax || ((trg<16 && trg>=0) && (src<16 && src>=0)))
-                execute(p.PCB.reg, p.sharedMem);
+            fetchDecode(register, mem);
+            if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
+                execute(register, mem);
+            else 
+                break;
+            if(pc>register.getReg((byte)18)){ //PC going outside alloted code size
+                System.out.println("Process terminated due to abnormal activity.");
+                inst = 243;
+                break;
+            }
 
             clockCycle += 2;
         }
@@ -89,10 +96,17 @@ public class cycle
         pc = p.PCB.reg.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         while(inst!=243) {
-            fetchDecode(p.PCB.reg, p.sharedMem);
-            if(Syntax || ((trg<16 && trg>=0) && (src<16 && src>=0)))
-                execute(p.PCB.reg, p.sharedMem);
-
+            fetchDecode(register, mem);
+            System.out.println("Hello" + Syntax);
+            if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
+                execute(register, mem);
+            else 
+                break;
+            if(pc>register.getReg((byte)18)){ //PC going outside alloted code size
+                System.out.println("Process terminated due to abnormal activity.");
+                inst = 243;
+                break;
+            }
             clockCycle += 2;
             readyRoundRobinQueue.incWait();
 
@@ -129,7 +143,7 @@ public class cycle
         pc = register.getReg((byte) 19);
         register.INC((byte) 19);
         inst = Byte.toUnsignedInt(mem.getMemByte(pc));
-        //System.out.println(inst);
+        System.out.println(inst);
         if(inst>=48 && inst<=54)
         {
             register.reFlag();
@@ -184,7 +198,7 @@ public class cycle
             register.reFlag();
             register.INC((byte) 19); //NOOP
         }
-        else if(inst<=241 && inst>243)
+        else if(inst<=241 || inst>243)
         {
             System.out.println("Invalid Syntax");
             Syntax = false;
@@ -200,9 +214,9 @@ public class cycle
     public void execute(regFile register, memory mem)
     {
         //System.out.println(inst + " "  + num + " " + src + " " +  trg);
-        System.out.println(pc);
+        //System.out.println(pc);
         String opcode = Integer.toHexString(inst);
-        System.out.println(opcode);
+        //System.out.println(opcode);
         switch (opcode) {
             case "16":
                 register.MOV(trg, src);
@@ -325,6 +339,6 @@ public class cycle
             default:
                 break;
         }
-        //register.printGenReg();
+        register.printGenReg();
     }
 }
