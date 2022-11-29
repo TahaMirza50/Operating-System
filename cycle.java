@@ -3,6 +3,8 @@ import java.io.FileWriter;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import javax.crypto.spec.RC2ParameterSpec;
+
 /**
  * Cycle - This object identifies a cycle through which each instruction goes through. Each instruction is fetched, decoded and executed.
  */
@@ -15,11 +17,14 @@ public class cycle
     private int inst;
     private byte src,trg;
     //private String add;
+    private short codeBase;
+    private short dataBase;
+    private short stackBase;
     private short pc;
     private short value;
     private short add;
     private boolean Syntax = true;
-    private regFile cpuRegFile;
+    private regFile cpuRegFile = new regFile();
     memory mainmemory = new memory();
     process p1;
 
@@ -73,30 +78,41 @@ public class cycle
      */
     public void runPriorityProcess(process p)
     {
-        pc = p.PCB.reg.getReg((byte) 19);
+        copy(p.PCB.reg);
+        
+        pc = cpuRegFile.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         try {
             File processFile = new File("output/" + p.PCB.getName() + ".txt");
             processFile.createNewFile();
             
             FileWriter processWriter = new FileWriter(processFile, processFile.exists());
-            
+
             while(inst!=243) {
-                fetchDecode(p.PCB.reg, p.sharedMem);
+                fetchDecode(cpuRegFile, p.sharedMem);
                 if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0)) {
-                    execute(p.PCB.reg, p.sharedMem);
+                    execute(cpuRegFile, p.sharedMem);
                 }        
                 else 
                     break;
-                if(pc>(p.PCB.reg.getReg((byte)17)+p.PCB.reg.getReg((byte)18))){ //PC going outside alloted code size
+                if(pc>(cpuRegFile.getReg((byte)17)+cpuRegFile.getReg((byte)18))){ //PC going outside alloted code size
                     System.out.println("Process terminated due to abnormal activity.");
-                    processWriter.write("Process terminated due to abnormal activity." + "\n") ;
                     inst = 243;
                     break;
                 }
 
                 clockCycle += 2;
             }
+
+            // codeBase = cpuRegFile.getReg((byte) 17);
+            // dataBase = cpuRegFile.getReg((byte) 20);
+            // stackBase = cpuRegFile.getReg((byte) 23);
+            // mainmemory.memTable.deleteFrame(codeBase/128);
+            // mainmemory.memTable.deleteFrame(dataBase/128);
+            // mainmemory.memTable.deleteFrame(stackBase/128);
+
+            save(p.PCB.reg);
+
             p.PCB.setExecutionTime(clockCycle);
             System.out.println("Execution Time: " + p.PCB.getExecutionTime());
             // dump entire memory and execution time to file and close file
@@ -106,6 +122,8 @@ public class cycle
 
             processWriter.close();
             inst = 0;
+
+
         } catch (Exception e) {
             System.out.println("An error occurred: " + e);
         }
@@ -113,23 +131,24 @@ public class cycle
 
     public void runRoundRobinProcess(process p)
     {
-        pc = p.PCB.reg.getReg((byte) 19);
+        copy(p.PCB.reg);
+        
+        pc = cpuRegFile.getReg((byte) 19);
         inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
         try {
             File processFile = new File("output/" + p.PCB.getName() + ".txt");
             processFile.createNewFile();
             
             FileWriter processWriter = new FileWriter(processFile, processFile.exists());
-        
+
             while(inst!=243) {
-                fetchDecode(p.PCB.reg, p.sharedMem);
-                System.out.println("Hello" + Syntax);
+                fetchDecode(cpuRegFile, p.sharedMem);
                 if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
-                    execute(p.PCB.reg, p.sharedMem);
+                    execute(cpuRegFile, p.sharedMem);
                     // add each instruction to file
                 else 
                     break;
-                if(pc>(p.PCB.reg.getReg((byte)17)+p.PCB.reg.getReg((byte)18))){ //PC going outside alloted code size
+                if(pc>(cpuRegFile.getReg((byte)17)+cpuRegFile.getReg((byte)18))){ //PC going outside alloted code size
                     System.out.println("Process terminated due to abnormal activity.");
                     inst = 243;
                     break;
@@ -138,15 +157,25 @@ public class cycle
                 readyRoundRobinQueue.incWait();
 
                 if (clockCycle >= quantum) {
+
                     readyRoundRobinQueue.switchProcess();
                     p.PCB.setExecutionTime(clockCycle);
-                    
+
                     clockCycle = 0;
                     break;
                 }
             }
+
+            save(p.PCB.reg);
             
             if (inst == 243) {
+                // codeBase = cpuRegFile.getReg((byte) 17);
+                // dataBase = cpuRegFile.getReg((byte) 20);
+                // stackBase = cpuRegFile.getReg((byte) 23);
+                // mainmemory.memTable.deleteFrame(codeBase/128);
+                // mainmemory.memTable.deleteFrame(dataBase/128);
+                // mainmemory.memTable.deleteFrame(stackBase/128);
+                
                 p.PCB.setExecutionTime(2);
                 System.out.println("Execution Time: " + p.PCB.getExecutionTime());
                 System.out.println("Waiting Time: " + p.PCB.getWaitTime());
@@ -378,4 +407,80 @@ public class cycle
         }
         register.printGenReg();
     }
+
+    void copy(regFile pFile){
+        cpuRegFile.setReg((byte) 0, (short) pFile.getReg((byte)0));
+        cpuRegFile.setReg((byte) 1, (short) pFile.getReg((byte)1));
+        cpuRegFile.setReg((byte) 2, (short) pFile.getReg((byte)2));
+        cpuRegFile.setReg((byte) 3, (short) pFile.getReg((byte)3));
+        cpuRegFile.setReg((byte) 4, (short) pFile.getReg((byte)4));
+        cpuRegFile.setReg((byte) 5, (short) pFile.getReg((byte)5));
+        cpuRegFile.setReg((byte) 6, (short) pFile.getReg((byte)6));
+        cpuRegFile.setReg((byte) 7, (short) pFile.getReg((byte)7));
+        cpuRegFile.setReg((byte) 8, (short) pFile.getReg((byte)8));
+        cpuRegFile.setReg((byte) 9, (short) pFile.getReg((byte)9));
+        cpuRegFile.setReg((byte) 10, (short) pFile.getReg((byte)10));
+        cpuRegFile.setReg((byte) 11, (short) pFile.getReg((byte)11));
+        cpuRegFile.setReg((byte) 12, (short) pFile.getReg((byte)12));
+        cpuRegFile.setReg((byte) 13, (short) pFile.getReg((byte)13));
+        cpuRegFile.setReg((byte) 14, (short) pFile.getReg((byte)14));
+        cpuRegFile.setReg((byte) 15, (short) pFile.getReg((byte)15));
+        cpuRegFile.setReg((byte) 16, (short) pFile.getReg((byte)16));
+        cpuRegFile.setReg((byte) 17, (short) pFile.getReg((byte)17));
+        cpuRegFile.setReg((byte) 18, (short) pFile.getReg((byte)18));
+        cpuRegFile.setReg((byte) 19, (short) pFile.getReg((byte)19));
+        cpuRegFile.setReg((byte) 20, (short) pFile.getReg((byte)20));
+        cpuRegFile.setReg((byte) 21, (short) pFile.getReg((byte)21));
+        cpuRegFile.setReg((byte) 22, (short) pFile.getReg((byte)22));
+        cpuRegFile.setReg((byte) 23, (short) pFile.getReg((byte)23));
+        cpuRegFile.setReg((byte) 24, (short) pFile.getReg((byte)24));
+        cpuRegFile.setReg((byte) 25, (short) pFile.getReg((byte)25));
+        cpuRegFile.setReg((byte) 26, (short) pFile.getReg((byte)26));
+        cpuRegFile.setReg((byte) 27, (short) pFile.getReg((byte)27));
+        cpuRegFile.setReg((byte) 28, (short) pFile.getReg((byte)28));
+        cpuRegFile.setReg((byte) 29, (short) pFile.getReg((byte)29));
+        cpuRegFile.setReg((byte) 30, (short) pFile.getReg((byte)30));
+        for (int i=0 ; i<16 ; i++) {
+            cpuRegFile.setFlag(i,pFile.getFlag(i));
+        }
+    } 
+
+    void save(regFile pFile)
+    {
+        pFile.setReg((byte) 0, (short) cpuRegFile.getReg((byte)0));
+        pFile.setReg((byte) 1, (short) cpuRegFile.getReg((byte)1));
+        pFile.setReg((byte) 2, (short) cpuRegFile.getReg((byte)2));
+        pFile.setReg((byte) 3, (short) cpuRegFile.getReg((byte)3));
+        pFile.setReg((byte) 4, (short) cpuRegFile.getReg((byte)4));
+        pFile.setReg((byte) 5, (short) cpuRegFile.getReg((byte)5));
+        pFile.setReg((byte) 6, (short) cpuRegFile.getReg((byte)6));
+        pFile.setReg((byte) 7, (short) cpuRegFile.getReg((byte)7));
+        pFile.setReg((byte) 8, (short) cpuRegFile.getReg((byte)8));
+        pFile.setReg((byte) 9, (short) cpuRegFile.getReg((byte)9));
+        pFile.setReg((byte) 10, (short) cpuRegFile.getReg((byte)10));
+        pFile.setReg((byte) 11, (short) cpuRegFile.getReg((byte)11));
+        pFile.setReg((byte) 12, (short) cpuRegFile.getReg((byte)12));
+        pFile.setReg((byte) 13, (short) cpuRegFile.getReg((byte)13));
+        pFile.setReg((byte) 14, (short) cpuRegFile.getReg((byte)14));
+        pFile.setReg((byte) 15, (short) cpuRegFile.getReg((byte)15));
+        pFile.setReg((byte) 16, (short) cpuRegFile.getReg((byte)16));
+        pFile.setReg((byte) 17, (short) cpuRegFile.getReg((byte)17));
+        pFile.setReg((byte) 18, (short) cpuRegFile.getReg((byte)18));
+        pFile.setReg((byte) 19, (short) cpuRegFile.getReg((byte)19));
+        pFile.setReg((byte) 20, (short) cpuRegFile.getReg((byte)20));
+        pFile.setReg((byte) 21, (short) cpuRegFile.getReg((byte)21));
+        pFile.setReg((byte) 22, (short) cpuRegFile.getReg((byte)22));
+        pFile.setReg((byte) 23, (short) cpuRegFile.getReg((byte)23));
+        pFile.setReg((byte) 24, (short) cpuRegFile.getReg((byte)24));
+        pFile.setReg((byte) 25, (short) cpuRegFile.getReg((byte)25));
+        pFile.setReg((byte) 26, (short) cpuRegFile.getReg((byte)26));
+        pFile.setReg((byte) 27, (short) cpuRegFile.getReg((byte)27));
+        pFile.setReg((byte) 28, (short) cpuRegFile.getReg((byte)28));
+        pFile.setReg((byte) 29, (short) cpuRegFile.getReg((byte)29));
+        pFile.setReg((byte) 30, (short) cpuRegFile.getReg((byte)30));
+        for (int i=0 ; i<16 ; i++) {
+            pFile.setFlag(i,cpuRegFile.getFlag(i));
+        }
+    } 
+
 }

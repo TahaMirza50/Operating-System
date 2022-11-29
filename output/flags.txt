@@ -4,10 +4,9 @@ Process Priority: 16
 Process Size Code: 513
 Process Size Data: 512
 Process Execution Time: 474
-Process Waiting Time: 580
-Process Instruction Count: 0
-Process Current PC: 0
-Process Register Values: General Register values:
+Process Waiting Time: 688
+Process Register Values: 
+General Register values:
 Reg 0: -3342
 Reg 1: -1543
 Reg 2: -5655
@@ -24,16 +23,17 @@ Reg 12: -258
 Reg 13: -1
 Reg 14: -7455
 Reg 15: 3856
+Special Register values:
 Reg 16: 0
-Reg 17: 1280
+Reg 17: 2176
 Reg 18: 513
-Reg 19: 1793
-Reg 20: 2560
+Reg 19: 2689
+Reg 20: 3456
 Reg 21: 50
-Reg 22: 2560
-Reg 23: 1920
+Reg 22: 3456
+Reg 23: 2816
 Reg 24: 512
-Reg 25: 1920
+Reg 25: 2816
 Reg 26: 0
 Reg 27: 0
 Reg 28: 0

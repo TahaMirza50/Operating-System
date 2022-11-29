@@ -5,9 +5,8 @@ Process Size Code: 57
 Process Size Data: 4
 Process Execution Time: 30
 Process Waiting Time: 0
-Process Instruction Count: 0
-Process Current PC: 0
-Process Register Values: General Register values:
+Process Register Values: 
+General Register values:
 Reg 0: 0
 Reg 1: 14336
 Reg 2: 523
@@ -24,16 +23,17 @@ Reg 12: 0
 Reg 13: 0
 Reg 14: 0
 Reg 15: 0
+Special Register values:
 Reg 16: 0
-Reg 17: 5376
+Reg 17: 6272
 Reg 18: 57
-Reg 19: 5413
-Reg 20: 5632
+Reg 19: 6309
+Reg 20: 6528
 Reg 21: 50
-Reg 22: 5630
-Reg 23: 5504
+Reg 22: 6526
+Reg 23: 6400
 Reg 24: 4
-Reg 25: 5504
+Reg 25: 6400
 Reg 26: 0
 Reg 27: 0
 Reg 28: 0

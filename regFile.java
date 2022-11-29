@@ -13,16 +13,16 @@ public class regFile
         //setReg((byte) 17, (short) 0); // code base
         //setReg((byte) 18, (short) 0);  code limit
         //setReg((byte) 19, (short) 0); // code counter
-        //setReg((byte) 20, (short) 65535); // stack base
-        //setReg((byte) 21, (short) 50); // stack limit (50 bytes)
-        //setReg((byte) 22, (short) 65535); // stack counter
+        //setReg((byte) 20, (short) 0); // stack base
+        //setReg((byte) 21, (short) 0); // stack limit (50 bytes)
+        //setReg((byte) 22, (short) 0); // stack counter
         //setReg((byte) 23, (short) 0); // data base
         //setReg((byte) 24, (short) 0); // data limit
         //setReg((byte) 25, (short) 0); // data counter
     }
-    public short getReg(byte reg)
+    public short getReg(byte code)
     {
-        return Reg[reg];
+        return Reg[code];
     }
     public void setReg(byte code, short value)
     {
@@ -131,6 +131,10 @@ public class regFile
     public char getFlag(int x)
     {
         return flag[x];
+    }
+    public void setFlag(int x, char value)
+    {
+        flag[x] = value;
     }
     /**
      * @dev Following are the arithmetic, logical, rotate, shift operations on registers and immediate.
@@ -267,13 +271,15 @@ public class regFile
         String output = "";
         System.out.println("General Register values:");
 
-        output += "General Register values:" + "\n";
+        output += "\n" + "General Register values:" + "\n";
         for (int i = 0; i < 16; i++) {
             System.out.println("Reg " + (i) + ": " + Reg[i]);
             output += "Reg " + (i) + ": " + Reg[i] + "\n";
         }
 
         System.out.println("Special Register values:");
+
+        output += "Special Register values:" + "\n";
         for (int i = 16; i < Reg.length; i++) {
             System.out.println("Reg " + (i) + ": " + Short.toUnsignedInt(Reg[i]));
             output += "Reg " + (i) + ": " + Short.toUnsignedInt(Reg[i]) + "\n";

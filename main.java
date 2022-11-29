@@ -13,9 +13,8 @@ public class main
         cycle exe = new cycle(8);
         try{
             exe.load("p5");
-            //exe.load("p5");
             exe.load("sfull");
-            //exe.load("sfull");
+            exe.load("sfull");
             exe.load("flags");
             exe.load("large0");
             exe.load("noop");

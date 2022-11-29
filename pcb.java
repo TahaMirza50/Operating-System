@@ -13,13 +13,9 @@ public class pcb
     pagetable datapt = new pagetable(20);
     pagetable codept = new pagetable(20);
     pagetable stackpt = new pagetable(20);
-    private int currPC;
-    private int instCount;
 
     public pcb() {
         reg = new regFile();
-        currPC = 0;
-        instCount = 0;
     }
 
     public pcb(byte priority, byte id, String filename, byte sized, byte sizec){
@@ -44,23 +40,6 @@ public class pcb
 
     int getExecutionTime() {
         return p_exectionTime;
-    }
-
-
-    int getinstcounter(){ 
-        return instCount;
-    }
-   
-    void incinstcounter(){
-        instCount++;
-    }
-
-    int getcount(){
-        return currPC;
-    }
-  
-    void setcount(int count){
-        currPC = count;
     }
 
     int getP_ID(){
@@ -136,8 +115,6 @@ public class pcb
             fw.write("Process Size Data: " + p_Size_D + "\n");
             fw.write("Process Execution Time: " + p_exectionTime + "\n");
             fw.write("Process Waiting Time: " + p_waitingTime + "\n");
-            fw.write("Process Instruction Count: " + instCount + "\n");
-            fw.write("Process Current PC: " + currPC + "\n");
             fw.write("Process Register Values: " + reg.printGenReg() + "\n");
         }
         catch (Exception e) {

@@ -5,9 +5,8 @@ Process Size Code: 68
 Process Size Data: 30
 Process Execution Time: 4
 Process Waiting Time: 0
-Process Instruction Count: 0
-Process Current PC: 0
-Process Register Values: General Register values:
+Process Register Values: 
+General Register values:
 Reg 0: 0
 Reg 1: 0
 Reg 2: 0
@@ -24,16 +23,17 @@ Reg 12: 0
 Reg 13: 0
 Reg 14: 0
 Reg 15: 0
+Special Register values:
 Reg 16: 0
-Reg 17: 4992
+Reg 17: 5888
 Reg 18: 68
-Reg 19: 5060
-Reg 20: 5248
+Reg 19: 5956
+Reg 20: 6144
 Reg 21: 50
-Reg 22: 5248
-Reg 23: 5120
+Reg 22: 6144
+Reg 23: 6016
 Reg 24: 30
-Reg 25: 5120
+Reg 25: 6016
 Reg 26: 0
 Reg 27: 0
 Reg 28: 0
