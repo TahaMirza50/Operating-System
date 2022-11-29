@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class memory {
     public static byte[] mem = new byte[65536];
 
-    public static pagetable memTable = new pagetable(1024);
+    public static pagetable memTable = new pagetable(512);
     public int pageSize = 128;
 
 
@@ -50,7 +50,8 @@ public class memory {
         if(i==-1){
             System.out.println("Memory is full");
         } else {
-            memTable.setFrame(i, 1);
+            memTable.setFrame(i, i);
+            //System.out.println(i);
             int j = 0;
             for ( j=0; j<codeSize ; j++){
                 int memind = i*128+j;
@@ -90,8 +91,8 @@ public class memory {
 */
     public int search() {
         int i = 0;
-        for (i = 0; (i < memTable.size) && (memTable.getFrame(i) == 1); i++);
-        if (memTable.getFrame(i) == 0) 
+        for (i = 0; (i < memTable.size) && (memTable.getFlag(i) == 1) ; i++);
+        if (memTable.getFlag(i) == 0) 
             return i;
         else 
             return -1;

@@ -16,10 +16,6 @@ public class cycle
     private short num;
     private int inst;
     private byte src,trg;
-    //private String add;
-    private short codeBase;
-    private short dataBase;
-    private short stackBase;
     private short pc;
     private short value;
     private short add;
@@ -48,6 +44,8 @@ public class cycle
         else {
             System.out.println("Priority is out of range");
         }
+
+        System.out.println();
         // run(p1.PCB.reg, mainmemory);
         // mainmemory.printMemory();
     }
@@ -57,7 +55,7 @@ public class cycle
             clockCycle = 0;
 
             p1 = readyPriorityQueue.poll();
-            System.out.println(p1.toString());
+            //System.out.println(p1.toString());
             runPriorityProcess(p1);
         }
 
@@ -65,7 +63,7 @@ public class cycle
             clockCycle = 0;
 
             p1 = readyRoundRobinQueue.peek();
-            System.out.println(p1.toString());
+            //System.out.println(p1.toString());
 
             runRoundRobinProcess(p1);
         }
@@ -97,6 +95,7 @@ public class cycle
                     break;
                 if(pc>(cpuRegFile.getReg((byte)17)+cpuRegFile.getReg((byte)18))){ //PC going outside alloted code size
                     System.out.println("Process terminated due to abnormal activity.");
+                    System.out.println(pc);
                     inst = 243;
                     break;
                 }
@@ -113,16 +112,23 @@ public class cycle
 
             save(p.PCB.reg);
 
+            //p.PCB.reg.printGenReg();
+
+            p.PCB.codept.printTable();
+            p.PCB.datapt.printTable();
+            p.PCB.stackpt.printTable();
+
             p.PCB.setExecutionTime(clockCycle);
             System.out.println("Execution Time: " + p.PCB.getExecutionTime());
             // dump entire memory and execution time to file and close file
 
             p.PCB.printPcbToFile(processWriter);
-            p.PCB.printProcessMemory(processWriter, p.sharedMem);
+            p.PCB.printProcessMemory(processWriter, mainmemory);
 
             processWriter.close();
             inst = 0;
 
+            System.out.println();
 
         } catch (Exception e) {
             System.out.println("An error occurred: " + e);
@@ -169,6 +175,14 @@ public class cycle
             save(p.PCB.reg);
             
             if (inst == 243) {
+                //p.PCB.reg.printGenReg();
+
+                p.PCB.codept.printTable();
+                p.PCB.datapt.printTable();
+                p.PCB.stackpt.printTable();
+
+                //for(int i=0 ; i<)
+
                 // codeBase = cpuRegFile.getReg((byte) 17);
                 // dataBase = cpuRegFile.getReg((byte) 20);
                 // stackBase = cpuRegFile.getReg((byte) 23);
@@ -181,11 +195,13 @@ public class cycle
                 System.out.println("Waiting Time: " + p.PCB.getWaitTime());
 
                 p.PCB.printPcbToFile(processWriter);
-                p.PCB.printProcessMemory(processWriter, p.sharedMem);
+                p.PCB.printProcessMemory(processWriter, mainmemory);
                 
                 processWriter.close();
                 readyRoundRobinQueue.delete();
                 inst = 0;
+
+                System.out.println();
             }
 
         } catch (Exception e) {
@@ -209,7 +225,7 @@ public class cycle
         pc = register.getReg((byte) 19);
         register.INC((byte) 19);
         inst = Byte.toUnsignedInt(mem.getMemByte(pc));
-        System.out.println(inst);
+        //System.out.println(inst);
         if(inst>=48 && inst<=54)
         {
             register.reFlag();
@@ -386,7 +402,7 @@ public class cycle
                 add = register.getReg((byte) 22);
                 value = register.getReg(trg);
                 mem.setMem(add, value);
-                System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
+                //System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
                 register.INC((byte) 22);
                 register.INC((byte) 22);
                 break;
@@ -405,7 +421,7 @@ public class cycle
             default:
                 break;
         }
-        register.printGenReg();
+        //register.printGenReg();
     }
 
     void copy(regFile pFile){

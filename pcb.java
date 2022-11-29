@@ -10,9 +10,9 @@ public class pcb
     private int p_waitingTime;
     private String p_Name;
     regFile reg;
-    pagetable datapt = new pagetable(20);
-    pagetable codept = new pagetable(20);
-    pagetable stackpt = new pagetable(20);
+    pagetable datapt = new pagetable(512);
+    pagetable codept = new pagetable(512);
+    pagetable stackpt = new pagetable(512);
 
     public pcb() {
         reg = new regFile();

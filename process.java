@@ -1,11 +1,12 @@
 import java.io.*;
+import java.lang.Math;
 
 public class process implements Comparable<process>
 {
     memory sharedMem;
     int i = 0;
     pcb PCB;
-    //static int p = 0;  
+    static int currPageNO = 0;  
     // cycle exe = new cycle();
 
     process(){
@@ -53,55 +54,60 @@ public class process implements Comparable<process>
             code[i] = (byte) f_is.read();
         }
         
-        int currPageNO = 0;
-        byte pagePart[] = new byte[128];
+        int x = 0;
 
-        
-        int codePages = PCB.getP_Size_C() / 128;
-        while(codePages>=0){
-            for(int i=0; ((128 * currPageNO) + i) < PCB.getP_Size_C() && i<128 ; i++){
-                pagePart[i] = code[i +(128 * currPageNO)];
+        int codeBase = 128 * currPageNO;
+        //currPageNO = 0;
+        int codePages = (int) Math.ceil((double)PCB.getP_Size_C() / 128);
+        while(codePages>0){
+            byte[] pagePart = new byte[128];
+            for(int i=0; (i +(128 * x)) < PCB.getP_Size_C() && i<128 ; i++){
+                pagePart[i] = code[i +(128 * x)];
             }
             int frame = sharedMem.codeLoad(pagePart, 128);
             PCB.codept.setFrame(currPageNO,frame);
+            x++;
             ++currPageNO;
             codePages--;
         }
-        currPageNO = 0;
-        pagePart = new byte[128];
-        int dataPages = PCB.getP_Size_D() / 128;
-        while(dataPages>=0){
-            for(int i=0; ((128 * currPageNO) + i) < PCB.getP_Size_D() && i<128 ; i++){
-                pagePart[i] = data[i +(128 * currPageNO)];
+
+        x = 0;
+        int dataBase = 128 * currPageNO;
+        //currPageNO = 0;
+        int dataPages = (int) Math.ceil((double)PCB.getP_Size_D() / 128);
+        while(dataPages>0){
+            byte[] pagePart = new byte[128];
+            for(int i=0; (i +(128 * x)) < PCB.getP_Size_D() && i<128 ; i++){
+                pagePart[i] = data[i +(128 * x)];
             }
             int frame = sharedMem.codeLoad(pagePart, 128);
             PCB.datapt.setFrame(currPageNO,frame);
+            x++;
             currPageNO++;
             dataPages--;
         }
 
-        int dataBase = 128 * PCB.datapt.getFrame(0);
         int dataCounter = dataBase;
         PCB.reg.setReg((byte) 23, (short) dataBase); // data base
         PCB.reg.setReg((byte) 24, (short) PCB.getP_Size_D()); // data limit
         PCB.reg.setReg((byte) 25, (short) dataCounter); // data counter
         
-        int codeBase = 128 * PCB.codept.getFrame(0);
         int codeCounter = codeBase;
         PCB.reg.setReg((byte) 17, (short) codeBase); //code base
         PCB.reg.setReg((byte) 18, (short) PCB.getP_Size_C()); //code limit
         PCB.reg.setReg((byte) 19, (short) codeCounter); //code counter
 
-        currPageNO = 0;
+        //currPageNO = 0;
         byte[] stack = new byte[128];
         int frame = sharedMem.codeLoad(stack, 128);
         PCB.stackpt.setFrame(currPageNO,frame);
-        int stackBase = 128 * PCB.stackpt.getFrame(0);
+        int stackBase = 128 * currPageNO;
         int stackCounter = stackBase;
         PCB.reg.setReg((byte) 20, (short) (stackBase)); //stack base
         PCB.reg.setReg((byte) 21, (short) (50)); //stack limit
         PCB.reg.setReg((byte) 22, (short) (stackCounter)); //stack coounter
         
+        currPageNO++;
         //PCB.codept.printTable();
         // PCB.reg.setReg((byte) 17, (short) 0); //code base
         // PCB.reg.setReg((byte) 18, (short) 0); //code limit

@@ -29,9 +29,11 @@ public class pagetable {
 
     public void printTable() {
         System.out.println("Page Table:");
-        for (int i = 0; i < 50; i++) {
-            System.out.println("Page " + i + " Frame " + pageTable[i]);
-            System.out.println("Page " + i + " Flag " + flagTable[i]);
+        for (int i = 0; i < this.size; i++) {
+            if(flagTable[i] == 1){
+                System.out.println("Page " + i + " Frame " + pageTable[i]);
+                System.out.println("Page " + i + " Flag " + flagTable[i]);
+            }
         }
     }
 }
