@@ -1,15 +1,11 @@
 public class main
 {
     /**
-     * @dev Initializes memory, registers, von-nueman cycle.
-     * Stores instruction in file p0 to main memory
-     * executes the instructions and outputs the register values
+     * @dev Load all the process file in the main memory and their respective queues.
+     * Then executes all these files 
      */
     public static void main(String[] args)
     {
-        // memory subMem = new memory();
-        // regFile subRegister =  new regFile();
-        // process Process = new process();
         cycle exe = new cycle(8);
         try{
             exe.load("p5");
@@ -27,9 +23,6 @@ public class main
             System.out.println("An error occurred: " + e);
         }
         exe.mainmemory.printMemory();
-        //Process.executeProcess();
-        //memory.storeCode("src/p0.txt", subMem.mem);
-        //exe.run(Process.PCB.reg, Process.sharedMem);
     }
 }
 
