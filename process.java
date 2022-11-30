@@ -2,7 +2,7 @@ import java.io.*;
 import java.lang.Math;
 
 /**
- * The process class creates PCB for a process and load the process into the main memory according to the pages.
+ * The process class creates PCB for the process and load that process into the main memory according through paging.
  */
 
 public class process implements Comparable<process>

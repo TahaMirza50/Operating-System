@@ -3,6 +3,7 @@ public class main
     /**
      * @dev Load all the process file one by one in the main memory and their respective queues.
      * Then execute all these files. 
+     * At the end main memory and its pagetable is printed.
      */
     public static void main(String[] args)
     {
