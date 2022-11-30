@@ -115,12 +115,14 @@ public class memory {
 
     String printMemory()
     {
+        System.out.println("Main Memory");
         String output = "";
         for (int i=0 ; i<65536 ; i++)
         {
             System.out.print(Integer.toHexString((mem[i]&0xff)) + " ");
             output += Integer.toHexString(mem[i]) + " ";
         } 
+        System.out.println();
         memTable.printTable();
         return output;
     }

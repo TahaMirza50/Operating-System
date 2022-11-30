@@ -81,7 +81,7 @@ public class cycle
         copy(p.PCB.reg);
         
         pc = cpuRegFile.getReg((byte) 19);
-        inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
+        inst = Byte.toUnsignedInt(mainmemory.getMemByte(pc));
         try {
             File processFile = new File("output/" + p.PCB.getName() + ".txt");
             processFile.createNewFile();
@@ -89,9 +89,9 @@ public class cycle
             FileWriter processWriter = new FileWriter(processFile, processFile.exists());
 
             while(inst!=243) {
-                fetchDecode(cpuRegFile, p.sharedMem);
+                fetchDecode(cpuRegFile, mainmemory);
                 if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0)) {
-                    execute(cpuRegFile, p.sharedMem);
+                    execute(cpuRegFile, mainmemory);
                 }        
                 else 
                     break;
@@ -140,7 +140,7 @@ public class cycle
         copy(p.PCB.reg);
         
         pc = cpuRegFile.getReg((byte) 19);
-        inst = Byte.toUnsignedInt(p.sharedMem.getMemByte(pc));
+        inst = Byte.toUnsignedInt(mainmemory.getMemByte(pc));
         try {
             File processFile = new File("output/" + p.PCB.getName() + ".txt");
             processFile.createNewFile();
@@ -148,9 +148,9 @@ public class cycle
             FileWriter processWriter = new FileWriter(processFile, processFile.exists());
 
             while(inst!=243) {
-                fetchDecode(cpuRegFile, p.sharedMem);
+                fetchDecode(cpuRegFile, mainmemory);
                 if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
-                    execute(cpuRegFile, p.sharedMem);
+                    execute(cpuRegFile, mainmemory);
                 else 
                     break;
                 if(pc>(cpuRegFile.getReg((byte)17)+cpuRegFile.getReg((byte)18))){ //PC going outside alloted code size
