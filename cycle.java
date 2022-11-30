@@ -114,6 +114,7 @@ public class cycle
 
             //p.PCB.reg.printGenReg();
 
+            System.out.println(p.PCB.getName());
             p.PCB.codept.printTable();
             p.PCB.datapt.printTable();
             p.PCB.stackpt.printTable();
@@ -177,6 +178,7 @@ public class cycle
             if (inst == 243) {
                 //p.PCB.reg.printGenReg();
 
+                System.out.println(p.PCB.getName());
                 p.PCB.codept.printTable();
                 p.PCB.datapt.printTable();
                 p.PCB.stackpt.printTable();
@@ -282,7 +284,7 @@ public class cycle
         }
         else if(inst<=241 || inst>243)
         {
-            System.out.println("Invalid Syntax");
+            System.out.println("Invalid Syntax Found");
             Syntax = false;
         }
     }
@@ -373,12 +375,14 @@ public class cycle
                 //System.out.println(num);
                 break;         
             case "51":
-                    value = p1.getData(num);
-                    register.setReg(trg, value);
+                add = register.getReg((byte)23);
+                value = mem.getMemShort(add+num);
+                register.setReg(trg, value);
                 break;   
             case "52":
-                    value = register.getReg(trg);
-                    p1.setData(num, value);
+                value = register.getReg(trg);
+                add = register.getReg((byte)23);
+                mem.setMem(add+num,value);
                 break;     
             case "71":
                 register.SHL(trg);
@@ -399,19 +403,23 @@ public class cycle
                 register.DEC(trg);
                 break;
             case "77":
-                add = register.getReg((byte) 22);
-                value = register.getReg(trg);
-                mem.setMem(add, value);
-                //System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
-                register.INC((byte) 22);
-                register.INC((byte) 22);
+                if((register.getReg((byte) 22) > register.getReg((byte) 20)) && (register.getReg((byte) 22) <= (register.getReg((byte) 20) + register.getReg((byte) 21)))) {
+                    add = register.getReg((byte) 22);
+                    value = register.getReg(trg);
+                    mem.setMem(add, value);
+                    //System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
+                    register.INC((byte) 22);
+                    register.INC((byte) 22);
+                }    
                 break;
             case "78":
-                add = register.getReg((byte) 22);
-                value = register.getReg(trg);
-                mem.getMemShort(add-1);
-                register.DEC((byte) 22);
-                register.DEC((byte) 22);
+                if((register.getReg((byte) 22) > register.getReg((byte) 20)) && (register.getReg((byte) 22) <= (register.getReg((byte) 20) + register.getReg((byte) 21)))) {
+                    add = register.getReg((byte) 22);
+                    value = mem.getMemShort(add);
+                    register.setReg(trg,value);
+                    register.DEC((byte) 22);
+                    register.DEC((byte) 22);
+                }
                 break;
             case "f2":
                 //NOOP

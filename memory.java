@@ -139,7 +139,8 @@ public class memory {
         String output = "";
         for (int i=0 ; i<65536 ; i++)
         {
-            System.out.print(Integer.toHexString(mem[i]) + " ");
+            System.out.print(Integer.toHexString((mem[i]&0xff)) + " ");
+            //System.out.print(Integer.toHexString(mem[i]) + " ");
             output += Integer.toHexString(mem[i]) + " ";
         } 
         memTable.printTable();

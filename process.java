@@ -123,42 +123,6 @@ public class process implements Comparable<process>
         //sharedMem.printMemory();
     }
 
-    byte getCode(short pc) {
-        short pageno = (short) (pc / 128);
-        short d = (short) (pc % 128);
-        int frame = PCB.codept.getFrame(pageno);
-        return  sharedMem.mem[(frame * 128) + d];
-    }
-
-    short getData(short offset) {  
-        short pageno = (short) (offset / 128);
-        short d = (short) (offset % 128);
-        int frame = PCB.datapt.getFrame(pageno);
-        byte Fbyte = sharedMem.mem[(frame * 128) + d];
-        byte Sbyte = sharedMem.mem[(frame * 128) + d+1];
-        return sharedMem.createShort(Fbyte, Sbyte);
-    }
-    
-    void setData(short offset,short value){ 
-        short pageno = (short) (offset / 128);
-        short d = (short) (offset % 128);
-        int frame = PCB.datapt.getFrame(pageno);
-        byte Fbyte = sharedMem.getFirstByte(value);
-        byte Sbyte = sharedMem.getSecondByte(value);
-        sharedMem.mem[(frame * 128) + d] = Fbyte;
-        sharedMem.mem[(frame * 128) + d+1] = Sbyte;
-    }
-
-    byte getFirstByte(short value) {
-        byte temp = (byte) (value >> 8);
-        return temp;
-    }
-
-    byte getSecondByte(short value){
-        byte temp = (byte) (value);
-        return temp;
-    }
-    
     short createShort(byte FByte, byte SByte){
         short temp = (short) (FByte*256);
         temp = (short) (temp+SByte);

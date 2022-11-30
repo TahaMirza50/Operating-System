@@ -129,7 +129,7 @@ public class pcb
             short dataLimt = reg.getReg((byte) 24); // data limit
             fw.write("Data" + "\n");
             for (int i = dataBase; i <= dataBase+dataLimt; i++) {
-                fw.write(Integer.toHexString(mem.getMemByte(i)) + " ");
+                fw.write(Integer.toHexString(mem.getMemByte(i)&0xff) + " ");
             }
             fw.write("\n");
             fw.write("----------------" + "\n");
@@ -139,7 +139,7 @@ public class pcb
 
             fw.write("Code" + "\n");
             for (int i = codeBase; i <= codeBase+codeLimt; i++) {
-                fw.write(Integer.toHexString(mem.getMemByte(i)) + " ");
+                fw.write(Integer.toHexString(mem.getMemByte(i)&0xff) + " ");
             }
             fw.write("\n");
             fw.write("----------------" + "\n");
@@ -149,7 +149,7 @@ public class pcb
 
             fw.write("Stack" + "\n");
             for (int i = stackBase; i <= stackBase+stackLimt; i++) {
-                fw.write(Integer.toHexString(mem.getMemByte(i)) + " ");
+                fw.write(Integer.toHexString(mem.getMemByte(i)&0xff) + " ");
             }
             fw.write("\n");
             fw.write("----------------" + "\n");
