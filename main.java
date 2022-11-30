@@ -16,8 +16,6 @@ public class main
             exe.load("p5 - Copy");
             exe.load("power");
 
-            //System.out.println(exe.readyPriorityQueue.toString());
-
             exe.run();
         } catch (Exception e) {
             System.out.println("An error occurred: " + e);

@@ -131,7 +131,7 @@ public class process implements Comparable<process>
 
     @Override
     public int compareTo(process p1) {
-        return p1.PCB.getP_Priority() < PCB.getP_Priority() ? 1 : -1;
+        return p1.PCB.getP_Priority() > PCB.getP_Priority() ? 1 : -1;
     }
     // void executeProcess(){   
     //     sharedMem.printMemory();

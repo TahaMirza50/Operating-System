@@ -1,3 +1,7 @@
+
+/*
+ * Node class to be used for each element in queue
+ */
 class Node {
     process data;
     Node next;
@@ -8,6 +12,9 @@ class Node {
     }
 }
 
+/*
+ * circular Linked List that keeps tracks of current node being executed and switches process after quantum time
+ */
 public class roundRobinQueue {
     private Node head;
     private Node run;
@@ -17,6 +24,7 @@ public class roundRobinQueue {
         this.run = null;
     }
 
+    // Increments wait time of all processes in queue instead of the running process
     public void incWait() {
         Node temp = head;
         while (temp.next != null) {
@@ -28,6 +36,7 @@ public class roundRobinQueue {
             temp.data.PCB.incWaitTime();
     }
 
+    // switches process after quantum time
     public void switchProcess() {
         if (run.next != null) {
             run = run.next;
@@ -59,6 +68,7 @@ public class roundRobinQueue {
         }
     }
 
+    // removes process from queue after its execution is complete or terminated
     public void delete() {
         // delete the current completed run node and assign run with new process to execute
         Node temp = head;

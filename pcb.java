@@ -1,5 +1,11 @@
 import java.io.FileWriter;
 
+/*
+ * Process Control Block - created for each process when it is loaded in memory
+ * It contains all the information about the process
+ * Contains processId, processName, priority, codeSize, dataSize, execution and waiting time
+ * It has its own set of registers and a page table each for code, data and stack portion
+ */
 public class pcb
 {
     private int p_ID;
@@ -106,6 +112,7 @@ public class pcb
         return stackpt.getFrame(pageno);
     }
 
+    // Store the contents of PCB into a file after process termination
     void printPcbToFile(FileWriter fw) {
         try {
             fw.write("Process ID: " + p_ID + "\n");
@@ -122,6 +129,7 @@ public class pcb
         }
     }
 
+    // Store the contents of memory of this process into a file after process termination
     void printProcessMemory(FileWriter fw, memory mem) {
         try {
             

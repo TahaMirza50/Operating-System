@@ -1,3 +1,9 @@
+
+/*
+ * Stores the pages in memory, and keeps tracks of filled pages
+ * Containse setters and getters to store or fetch from a provided input page
+ */
+
 public class pagetable {
     public int[] pageTable;
     public int[] flagTable;

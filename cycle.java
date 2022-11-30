@@ -2,11 +2,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.PriorityQueue;
 import java.util.Queue;
-
-import javax.crypto.spec.RC2ParameterSpec;
-
 /**
- * Cycle - This object identifies a cycle through which each instruction goes through. Each instruction is fetched, decoded and executed.
+ * Cycle - It keeps track of all processes in the system and executes all of them based on their priority
  */
 
 public class cycle 
@@ -24,6 +21,10 @@ public class cycle
     memory mainmemory = new memory();
     process p1;
 
+    /*
+     * priority queue - Stores the process with lowest priority at the front
+     * roundRobinQueue - Stores the process in FIFO manner. Switches through the processes after quantum time or process termination
+     */
     Queue<process> readyPriorityQueue = new PriorityQueue<>();
     roundRobinQueue readyRoundRobinQueue = new roundRobinQueue();
 
@@ -31,7 +32,8 @@ public class cycle
         this.quantum = quantum;
     }
 
-    void load(String filename) throws Exception { //loads file
+    // Reads the file and creates a process for the provided file
+    void load(String filename) throws Exception {
         p1 = new process();
         p1.loadProcess(filename,mainmemory);
 
@@ -46,16 +48,17 @@ public class cycle
         }
 
         System.out.println();
-        // run(p1.PCB.reg, mainmemory);
-        // mainmemory.printMemory();
     }
 
+    /* executes all the processes in the system
+     * executes the process with lowest priority first and then the process with highest priority
+     * executes the process in round robin manner if the priority is greater than 15
+     */
     public void run() {
         while (!readyPriorityQueue.isEmpty()) {
             clockCycle = 0;
 
             p1 = readyPriorityQueue.poll();
-            //System.out.println(p1.toString());
             runPriorityProcess(p1);
         }
 
@@ -63,16 +66,15 @@ public class cycle
             clockCycle = 0;
 
             p1 = readyRoundRobinQueue.peek();
-            //System.out.println(p1.toString());
-
             runRoundRobinProcess(p1);
         }
     }
+
     /**
      * @dev Run function works in loop with each iteration fetching, decoding and excuting a instruction.
      * if instruction = 243 which means instruction is 'END' identifying that the code has ended.
-     * @param register = Register File
-     * @param mem = Memory
+     * Stores the output in a file after termination
+     * @param p = process
      */
     public void runPriorityProcess(process p)
     {
@@ -103,16 +105,7 @@ public class cycle
                 clockCycle += 2;
             }
 
-            // codeBase = cpuRegFile.getReg((byte) 17);
-            // dataBase = cpuRegFile.getReg((byte) 20);
-            // stackBase = cpuRegFile.getReg((byte) 23);
-            // mainmemory.memTable.deleteFrame(codeBase/128);
-            // mainmemory.memTable.deleteFrame(dataBase/128);
-            // mainmemory.memTable.deleteFrame(stackBase/128);
-
             save(p.PCB.reg);
-
-            //p.PCB.reg.printGenReg();
 
             System.out.println(p.PCB.getName());
             p.PCB.codept.printTable();
@@ -121,7 +114,6 @@ public class cycle
 
             p.PCB.setExecutionTime(clockCycle);
             System.out.println("Execution Time: " + p.PCB.getExecutionTime());
-            // dump entire memory and execution time to file and close file
 
             p.PCB.printPcbToFile(processWriter);
             p.PCB.printProcessMemory(processWriter, mainmemory);
@@ -136,6 +128,13 @@ public class cycle
         }
     }
 
+    /**
+     * @dev Run function works in loop with each iteration fetching, decoding and excuting a instruction.
+     * if instruction = 243 which means instruction is 'END' identifying that the code has ended.
+     * Switches process if clockcycles exceed quantum time
+     * Stores the output in a file after termination
+     * @param p = process
+     */
     public void runRoundRobinProcess(process p)
     {
         copy(p.PCB.reg);
@@ -152,7 +151,6 @@ public class cycle
                 fetchDecode(cpuRegFile, p.sharedMem);
                 if(Syntax==true && (trg<16 && trg>=0) && (src<16 && src>=0))          
                     execute(cpuRegFile, p.sharedMem);
-                    // add each instruction to file
                 else 
                     break;
                 if(pc>(cpuRegFile.getReg((byte)17)+cpuRegFile.getReg((byte)18))){ //PC going outside alloted code size
@@ -176,21 +174,12 @@ public class cycle
             save(p.PCB.reg);
             
             if (inst == 243) {
-                //p.PCB.reg.printGenReg();
 
                 System.out.println(p.PCB.getName());
                 p.PCB.codept.printTable();
                 p.PCB.datapt.printTable();
                 p.PCB.stackpt.printTable();
 
-                //for(int i=0 ; i<)
-
-                // codeBase = cpuRegFile.getReg((byte) 17);
-                // dataBase = cpuRegFile.getReg((byte) 20);
-                // stackBase = cpuRegFile.getReg((byte) 23);
-                // mainmemory.memTable.deleteFrame(codeBase/128);
-                // mainmemory.memTable.deleteFrame(dataBase/128);
-                // mainmemory.memTable.deleteFrame(stackBase/128);
                 
                 p.PCB.setExecutionTime(2);
                 System.out.println("Execution Time: " + p.PCB.getExecutionTime());
@@ -222,12 +211,11 @@ public class cycle
      */
     public void fetchDecode(regFile register,memory mem)
     {
-        //System.out.println(register.getReg((byte)19));
         Syntax = true;
         pc = register.getReg((byte) 19);
         register.INC((byte) 19);
         inst = Byte.toUnsignedInt(mem.getMemByte(pc));
-        //System.out.println(inst);
+
         if(inst>=48 && inst<=54)
         {
             register.reFlag();
@@ -257,7 +245,6 @@ public class cycle
             pc = register.getReg((byte) 19);
             src = mem.getMemByte(pc);
             register.INC((byte) 19);
-            //System.out.println(trg + " " + src);
         }
         else if(inst>=113 && inst<=120)
         {
@@ -297,10 +284,8 @@ public class cycle
      */
     public void execute(regFile register, memory mem)
     {
-        //System.out.println(inst + " "  + num + " " + src + " " +  trg);
-        //System.out.println(pc);
         String opcode = Integer.toHexString(inst);
-        //System.out.println(opcode);
+
         switch (opcode) {
             case "16":
                 register.MOV(trg, src);
@@ -370,9 +355,7 @@ public class cycle
                 break;
             case "3b":
                 short base = register.getReg((byte)17);
-                //System.out.println(add);   
                 register.setReg((byte)19, (short)(base + num));   
-                //System.out.println(num);
                 break;         
             case "51":
                 add = register.getReg((byte)23);
@@ -407,7 +390,6 @@ public class cycle
                     add = register.getReg((byte) 22);
                     value = register.getReg(trg);
                     mem.setMem(add, value);
-                    //System.out.println(trg + " " +add + " " + value + " " + mem.getMemShort(add));
                     register.INC((byte) 22);
                     register.INC((byte) 22);
                 }    
@@ -429,9 +411,9 @@ public class cycle
             default:
                 break;
         }
-        //register.printGenReg();
     }
 
+    // copy the input registers to current process's registers
     void copy(regFile pFile){
         cpuRegFile.setReg((byte) 0, (short) pFile.getReg((byte)0));
         cpuRegFile.setReg((byte) 1, (short) pFile.getReg((byte)1));
@@ -469,6 +451,7 @@ public class cycle
         }
     } 
 
+    // save the current registers to the input register file
     void save(regFile pFile)
     {
         pFile.setReg((byte) 0, (short) cpuRegFile.getReg((byte)0));

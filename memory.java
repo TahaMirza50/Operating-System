@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 /*
  *  Main Memory - a consecutive 64KB array of bytes
+ * It is divided into 512 pages of 128 bytes each
  */
 
 public class memory {
@@ -13,6 +14,7 @@ public class memory {
     public int pageSize = 128;
 
 
+    // set the value in big endian format in memory at the provided offset
     public void setMem(int offset, short value) {
         byte firstByte = getFirstByte(value);
         byte secondByte = getSecondByte(value);
@@ -22,7 +24,7 @@ public class memory {
     }
 
 
-
+    // get the byte at the provided offset
     public byte getMemByte(int offset) {
         if (offset > 65535) {
             System.out.println("Memory out of bounds");
@@ -31,6 +33,7 @@ public class memory {
         return mem[offset];
     }
 
+    // get the short value by combining the two successive bytes at the provided offset
     public short getMemShort(int offset) {
         if (offset > 65535) {
             System.out.println("Memory out of bounds");
@@ -43,6 +46,7 @@ public class memory {
         return createShort2(firstByte, secondByte);
     }
 
+    // fetches the next available empty frame in memory and stores the entire or part of the process in it
     public int codeLoad(byte[] carry, int codeSize)
     {
         int i = search();
@@ -61,34 +65,8 @@ public class memory {
         return i;
     }
 
-    //TODO
-    /**
-     * It reads the provided instruction file and stores them in main memory to be executed later by the CPU.
-     * @param fileName - file that contains the instructions
-     * @param mem - reference to the CPU's main memory
-     */
-    /* 
-    public static void storeCode(String fileName, byte[] mem) {
-        try {
-            File codeObj = new File(fileName);
-            Scanner reader = new Scanner(codeObj);
-            while (reader.hasNextLine()) {
-              String line = reader.nextLine();
 
-              String[]  data = line.split(" ");
-
-              for (int i = 0; i < data.length; i++) {
-                mem[i] = (byte) Integer.parseInt(data[i], 16);
-                //short value = (short) Integer.parseInt(data[i], 16);
-                //mem.setMem(i, value);
-              }
-            }
-            reader.close();
-          } catch (FileNotFoundException e) {
-            System.out.println("An error occurred: " + e);
-          }
-    }
-*/
+    // searches the memory for an empty frame
     public int search() {
         int i = 0;
         for (i = 0; (i < memTable.size) && (memTable.getFlag(i) == 1) ; i++);
@@ -134,13 +112,13 @@ public class memory {
         short tmp = (short) Integer.parseInt(hex,16);
         return tmp;
     }
+
     String printMemory()
     {
         String output = "";
         for (int i=0 ; i<65536 ; i++)
         {
             System.out.print(Integer.toHexString((mem[i]&0xff)) + " ");
-            //System.out.print(Integer.toHexString(mem[i]) + " ");
             output += Integer.toHexString(mem[i]) + " ";
         } 
         memTable.printTable();
