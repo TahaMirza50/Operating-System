@@ -136,6 +136,7 @@ public class memory {
     }
     String printMemory()
     {
+        System.out.println("Main Memory");
         String output = "";
         for (int i=0 ; i<65536 ; i++)
         {
@@ -143,6 +144,7 @@ public class memory {
             //System.out.print(Integer.toHexString(mem[i]) + " ");
             output += Integer.toHexString(mem[i]) + " ";
         } 
+        System.out.println();
         memTable.printTable();
         return output;
     }

@@ -1,8 +1,8 @@
 public class main
 {
     /**
-     * @dev Load all the process file in the main memory and their respective queues.
-     * Then executes all these files 
+     * @dev Load all the process file one by one in the main memory and their respective queues.
+     * Then execute all these files. 
      */
     public static void main(String[] args)
     {
