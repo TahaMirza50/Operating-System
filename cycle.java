@@ -3,7 +3,7 @@ import java.io.FileWriter;
 import java.util.PriorityQueue;
 import java.util.Queue;
 /**
- * Cycle - It keeps track of all processes in the system and executes all of them based on their priority
+ * Cycle - It keeps track of all processes in the system and executes all of them based on their priority.
  */
 
 public class cycle 
@@ -21,7 +21,8 @@ public class cycle
     memory mainmemory = new memory();
     process p1;
 
-    /*
+    /**
+     * @dev
      * priority queue - Stores the process with lowest priority at the front
      * roundRobinQueue - Stores the process in FIFO manner. Switches through the processes after quantum time or process termination
      */
@@ -32,7 +33,13 @@ public class cycle
         this.quantum = quantum;
     }
 
-    // Reads the file and creates a process for the provided file
+    /**
+     * @dev Reads the file and creates a process for the provided file.
+     * PCB for the process is created.
+     * Process is also loaded into main memory.
+     * @param filename
+     * @throws Exception
+     */
     void load(String filename) throws Exception {
         p1 = new process();
         p1.loadProcess(filename,mainmemory);
@@ -50,9 +57,10 @@ public class cycle
         System.out.println();
     }
 
-    /* executes all the processes in the system
-     * executes the process with lowest priority first and then the process with highest priority
-     * executes the process in round robin manner if the priority is greater than 15
+    /**
+     * @dev executes all the processes in the system.
+     * executes the process with lowest priority first and then the process with highest priority.
+     * executes the process in round robin manner if the priority is greater than 15.
      */
     public void run() {
         while (!readyPriorityQueue.isEmpty()) {
@@ -73,7 +81,8 @@ public class cycle
     /**
      * @dev Run function works in loop with each iteration fetching, decoding and excuting a instruction.
      * if instruction = 243 which means instruction is 'END' identifying that the code has ended.
-     * Stores the output in a file after termination
+     * Stores the output in a file after termination.
+     * Process is switch after termination according to priority.
      * @param p = process
      */
     public void runPriorityProcess(process p)
@@ -204,8 +213,8 @@ public class cycle
      * @dev First each instruction is check and next number of bytes are then read according to Instruction Format.
      * For register one byte is read, for immediate two bytes are read.
      * pc is used to read index of memory from code counter register (19th register).
-     * add converts this address to string.
      * register.INC() is used to increment code counter.
+     * if invalid inst syntax is found, the execution continues without executing that inst.
      * @param register
      * @param mem
      */
@@ -277,10 +286,10 @@ public class cycle
     }
 
     /**
-     * @dev fetches the opcode from instruction.
-     * Executes the corresponding function to that opcode with appropriate inputs
-     * Prints the register values after execution 
+     * @dev Converts the instruction into hexadecimal.
+     * Executes the functions corresponding to that opcode with appropriate inputs of register number. 
      * @param register - references the array of registers
+     * @param mem - references the mainmemory
      */
     public void execute(regFile register, memory mem)
     {
@@ -413,7 +422,10 @@ public class cycle
         }
     }
 
-    // copy the input registers to current process's registers
+    /**
+     * @dev Copies the PCB registers to CPU registers of the current process running.
+     * @param pFile
+     */
     void copy(regFile pFile){
         cpuRegFile.setReg((byte) 0, (short) pFile.getReg((byte)0));
         cpuRegFile.setReg((byte) 1, (short) pFile.getReg((byte)1));
@@ -451,7 +463,10 @@ public class cycle
         }
     } 
 
-    // save the current registers to the input register file
+    /**
+     * @dev Saves the CPU registers to PCB registers of the current process running.
+     * @param pFile
+     */
     void save(regFile pFile)
     {
         pFile.setReg((byte) 0, (short) cpuRegFile.getReg((byte)0));

@@ -15,7 +15,7 @@ public class process implements Comparable<process>
     }
 
     /**
-     * The function takes filename and load it into the memory pass to it by reference.
+     * @dev The function takes filename and load it into the memory pass to it by reference.
      * The file is readed byte by byte.
      * The loadProcess first reads the Name, Priority, ID, data size and calculate code size.
      * Then number of pages is calculated and data, code and stack are loaded according to it.
@@ -42,9 +42,11 @@ public class process implements Comparable<process>
         byte_second = (byte) f_is.read();
         PCB.setP_Size_D(createShort(byte_first, byte_second)); //Process Data Size
 
-        System.out.println(PCB.getP_ID());
         PCB.setP_Size_C((int)(file.length() - PCB.getP_Size_D() - 8)); //Process Code Size
         
+        System.out.println("Process Name : " + PCB.getName());
+        System.out.println("Process ID : " + PCB.getP_ID());
+        System.out.println("Process Priority : " + PCB.getP_Priority());
         System.out.println("Code Size : " + PCB.getP_Size_C());
         System.out.println("Data Size : " + PCB.getP_Size_D());
 
@@ -131,7 +133,7 @@ public class process implements Comparable<process>
     }
     
     /**
-     * Creates short of the bytes given.
+     * @dev Creates short of the bytes given.
      * @param FByte
      * @param SByte
      * @return

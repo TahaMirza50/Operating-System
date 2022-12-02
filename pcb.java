@@ -112,7 +112,10 @@ public class pcb
         return stackpt.getFrame(pageno);
     }
 
-    // Store the contents of PCB into a file after process termination
+    /**
+     * @dev Store the contents of PCB into a file after process termination
+     * @param fw
+     */
     void printPcbToFile(FileWriter fw) {
         try {
             fw.write("Process ID: " + p_ID + "\n");
@@ -129,7 +132,11 @@ public class pcb
         }
     }
 
-    // Store the contents of memory of this process into a file after process termination
+    /**
+     * @dev Store the contents of memory of this process into a file after process termination
+     * @param fw
+     * @param mem
+     */
     void printProcessMemory(FileWriter fw, memory mem) {
         try {
             

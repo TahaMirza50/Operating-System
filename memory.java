@@ -1,10 +1,7 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 /*
- *  Main Memory - a consecutive 64KB array of bytes
+ * Main Memory - a consecutive 64KB array of bytes
  * It is divided into 512 pages of 128 bytes each
+ * 512 x 128 = 65536 = 64KB
  */
 
 public class memory {
@@ -13,8 +10,11 @@ public class memory {
     public static pagetable memTable = new pagetable(512);
     public int pageSize = 128;
 
-
-    // set the value in big endian format in memory at the provided offset
+    /**
+     * @dev Set the value in big endian format in memory at the provided offset
+     * @param offset
+     * @param value
+     */
     public void setMem(int offset, short value) {
         byte firstByte = getFirstByte(value);
         byte secondByte = getSecondByte(value);
@@ -23,8 +23,11 @@ public class memory {
         mem[++offset] = secondByte;
     }
 
-
-    // get the byte at the provided offset
+    /**
+     * @dev Get the byte at the provided offset
+     * @param offset
+     * @return
+     */
     public byte getMemByte(int offset) {
         if (offset > 65535) {
             System.out.println("Memory out of bounds");
@@ -33,7 +36,11 @@ public class memory {
         return mem[offset];
     }
 
-    // get the short value by combining the two successive bytes at the provided offset
+    /**
+     * @dev Get the short value by combining the two successive bytes at the provided offset
+     * @param offset
+     * @return
+     */
     public short getMemShort(int offset) {
         if (offset > 65535) {
             System.out.println("Memory out of bounds");
@@ -46,7 +53,12 @@ public class memory {
         return createShort2(firstByte, secondByte);
     }
 
-    // fetches the next available empty frame in memory and stores the entire or part of the process in it
+    /**
+     * @dev Fetches the next available empty frame in memory and stores the entire or part of the process in it
+     * @param carry
+     * @param codeSize
+     * @return
+     */
     public int codeLoad(byte[] carry, int codeSize)
     {
         int i = search();
@@ -65,8 +77,10 @@ public class memory {
         return i;
     }
 
-
-    // searches the memory for an empty frame
+    /**
+     * @dev Searches the memory for an empty frame
+     * @return
+     */
     public int search() {
         int i = 0;
         for (i = 0; (i < memTable.size) && (memTable.getFlag(i) == 1) ; i++);
@@ -97,16 +111,11 @@ public class memory {
     }
 
     /**
-     * @dev combines the two bytes to form a short val in Big endian format
+     * @dev Combines the two bytes to form a short val in Big endian format
      * @param Firstbyte
      * @param Secondbyte
      * @return short
      */
-    short createShort(byte FByte, byte SByte){
-        short temp = (short) (FByte*256);
-        temp = (short) (temp+SByte);
-        return temp;
-    }
     short createShort2(byte Firstbyte,byte Secondbyte) { 
         String hex = Integer.toHexString(Firstbyte & 0xFF) + Integer.toHexString(Secondbyte & 0xFF);
         short tmp = (short) Integer.parseInt(hex,16);
